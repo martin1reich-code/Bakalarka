@@ -11,15 +11,63 @@ export interface TtsConfig {
     text: string;
     language: string;
     voiceId: string;
-    speed: number; // např. 0.5 až 2.0 (1.0 default)
-    pitch: number; // např. -20Hz až +20Hz (0 default)
+    speed: number;
+    pitch: number;
     mode: TtsMode;
 }
 
-// Mock dat pro dropdowny
 export const AVAILABLE_VOICES: VoiceOption[] = [
-    { id: 'cs-CZ-Wavenet-A', name: 'Čeština - Žena A (Wavenet)', gender: 'female', language: 'cs-CZ' },
-    { id: 'cs-CZ-Standard-A', name: 'Čeština - Žena B (Standard)', gender: 'female', language: 'cs-CZ' },
-    { id: 'cs-CZ-Wavenet-B', name: 'Čeština - Muž A (Wavenet)', gender: 'male', language: 'cs-CZ' },
-    { id: 'en-US-Neural2-A', name: 'English - Female (Neural)', gender: 'female', language: 'en-US' },
+    // --- CHIRP 3 HD (Nejnovější generace - Velmi přirozené) ---
+    {
+        id: 'cs-CZ-Chirp3-HD-Achird',
+        name: '🇨🇿 Čeština - Muž 1 (HD Achird)',
+        gender: 'male',
+        language: 'cs-CZ'
+    },
+    {
+        id: 'cs-CZ-Chirp3-HD-Fenrir',
+        name: '🇨🇿 Čeština - Muž 2 (HD Fenrir)',
+        gender: 'male',
+        language: 'cs-CZ'
+    },
+    {
+        id: 'cs-CZ-Chirp3-HD-Puck',
+        name: '🇨🇿 Čeština - Muž 3 (HD Puck)',
+        gender: 'male',
+        language: 'cs-CZ'
+    },
+    {
+        id: 'cs-CZ-Chirp3-HD-Achernar',
+        name: '🇨🇿 Čeština - Žena 1 (HD Achernar)',
+        gender: 'female',
+        language: 'cs-CZ'
+    },
+    {
+        id: 'cs-CZ-Chirp3-HD-Aoede',
+        name: '🇨🇿 Čeština - Žena 2 (HD Aoede)',
+        gender: 'female',
+        language: 'cs-CZ'
+    },
+
+    // --- KLASICKÉ WAVENET (Starší, robotičtější) ---
+    {
+        id: 'cs-CZ-Wavenet-A',
+        name: '🇨🇿 Čeština - Žena (Klasická Wavenet)',
+        gender: 'female',
+        language: 'cs-CZ'
+    },
+
+    // --- ANGLIČTINA ---
+    {
+        id: 'en-US-Neural2-A',
+        name: '🇺🇸 English - Neural Female',
+        gender: 'female',
+        language: 'en-US'
+    },
+    {
+        id: 'en-US-Neural2-D',
+        name: '🇺🇸 English - Neural Male',
+        gender: 'male',
+        language: 'en-US'
+    }
 ];

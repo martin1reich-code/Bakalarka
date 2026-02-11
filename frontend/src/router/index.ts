@@ -15,40 +15,43 @@ const router = createRouter({
     {
       path: '/result',
       name: 'result',
-      // Lazy-loading: Komponenta se načte až ve chvíli, kdy ji uživatel potřebuje.
-      // To zrychluje načtení úvodní stránky.
       component: () => import('../views/ResultView.vue'),
       meta: {
         title: 'Výsledek převodu'
       }
     },
-/*
-    // --- Další plánované cesty podle tvého zadání ---
     {
       path: '/library',
       name: 'library',
-      component: () => import('../views/LibraryView.vue'), // Zatím neexistuje, nutno vytvořit
-      meta: { title: 'Knihovna nahrávek' }
+      component: () => import('../views/LibraryPage.vue'),
+      meta: {
+        title: 'Knihovna nahrávek'
+      }
     },
     {
-      path: '/stats',
-      name: 'stats',
-      component: () => import('../views/StatsView.vue'), // Zatím neexistuje
-      meta: { title: 'Statistiky a modely' }
+      path: '/comparison',
+      name: 'comparison',
+      component: () => import('../views/ComparisonPage.vue'),
+      meta: {
+        title: 'Porovnání modelů'
+      }
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('../views/AccountPage.vue'),
+      meta: {
+        title: 'Uživatelský účet'
+      }
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/SettingsView.vue'), // Zatím neexistuje
-      meta: { title: 'Nastavení' }
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/LoginView.vue'), // Zatím neexistuje
-      meta: { title: 'Přihlášení' }
-    }*/
-
+      component: () => import('../views/SettingsPage.vue'),
+      meta: {
+        title: 'Nastavení'
+      }
+    }
   ]
 })
 
