@@ -4,6 +4,7 @@ import type { TtsResult } from '@/model/TtsSession';
 import type { TtsConfig } from '@/model/TtsConfig';
 // 1. PŘIDAT IMPORT: Potřebujeme seznam hlasů, abychom zjistili jejich jazyk
 import { AVAILABLE_VOICES } from '@/model/TtsConfig';
+import appConfig from '@/config';
 
 export const useTtsStore = defineStore('tts', () => {
     const config = ref<TtsConfig>({
@@ -41,7 +42,7 @@ export const useTtsStore = defineStore('tts', () => {
             console.log('%c FRONTEND: Odesílám konfiguraci: ', 'background: #222; color: #bada55');
             console.log(`Vybraný hlas: ${config.value.voiceId}, Jazyk automaticky nastaven na: ${correctLanguage}`);
 
-            const response = await fetch('http://localhost:3000/api/synthesize', {
+            const response = await fetch(`${appConfig.backendUrl}/api/synthesize`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,8 +56,19 @@ export const useTtsStore = defineStore('tts', () => {
                 throw new Error(errData.error || `Chyba backendu: ${response.statusText}`);
             }
 
-            const audioBlob = await response.blob();
-            const audioUrl = URL.createObjectURL(audioBlob);
+            const responseData = await response.json();
+            const returnedPath = responseData.audioPath || responseData.url || responseData.audioUrl;
+
+            if (!returnedPath) {
+                throw new Error('Backend nevrátil cestu k audio souboru.');
+            }
+
+            const audioUrl = returnedPath.startsWith('http')
+                ? returnedPath
+                : `${appConfig.backendUrl}${returnedPath}`;
+            
+            console.log('✅ FRONTEND: Audio URL zkonstruována:', audioUrl);
+            console.log('📦 Celá odpověď backendu:', responseData);
 
             currentResult.value = {
                 id: Date.now().toString(),
