@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router'
 import { useTtsStore } from '@/stores/ttsStore'
 import { storeToRefs } from 'pinia'
 import { AVAILABLE_VOICES } from '@/model/TtsConfig'
-import { FileText, Code, Sparkles, Upload, Wand2 } from 'lucide-vue-next'
+import { FileText, Code, Sparkles, Upload, Wand2, Scissors } from 'lucide-vue-next'
+import SSMLEditorWrapper from '@/components/SSMLEditorWrapper.vue'
 
 const router = useRouter()
 const ttsStore = useTtsStore()
@@ -44,8 +45,23 @@ const handleGenerate = async () => {
     alert('Zadejte text nebo nahrajte soubor')
     return
   }
+  
+  // Pokud je text delší než 4500 znaků, přesměruj na rozdělení
+  if (config.value.text.length > 4500) {
+    router.push('/text-split')
+    return
+  }
+  
   await ttsStore.generateAudio()
   router.push('/result')
+}
+
+const handleTextSplit = () => {
+  if (!config.value.text) {
+    alert('Zadejte text pro rozdělení')
+    return
+  }
+  router.push('/text-split')
 }
 </script>
 
@@ -100,7 +116,7 @@ const handleGenerate = async () => {
             </div>
             
             <div v-if="config.mode === 'manual-ssml'" class="space-y-3">
-              <textarea v-model="config.text" class="w-full min-h-[100px] p-3 font-mono text-sm rounded border" placeholder="<speak>Váš text s <emphasis>SSML</emphasis> tagy...</speak>"></textarea>
+              <SSMLEditorWrapper v-model="config.text" />
             </div>
             
             <div v-if="config.mode === 'auto-ssml'" class="space-y-3">
@@ -156,16 +172,29 @@ const handleGenerate = async () => {
             </div>
           </div>
 
-          <!-- Generate Button -->
-          <button 
-            class="w-full h-12 text-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
-            :disabled="(!config.text && !file) || isLoading"
-            @click="handleGenerate"
-          >
-            <Sparkles v-if="!isLoading" :size="18" />
-            <span v-if="isLoading">⏳ Generuji audio...</span>
-            <span v-else>Vygenerovat audio</span>
-          </button>
+          <!-- Action Buttons -->
+          <div class="space-y-3">
+            <!-- Text Split Button -->
+            <button 
+              class="w-full h-12 text-lg border-2 border-purple-600 text-purple-600 rounded-xl hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold transition"
+              :disabled="!config.text"
+              @click="handleTextSplit"
+            >
+              <Scissors :size="18" />
+              <span>Rozdělit text</span>
+            </button>
+
+            <!-- Generate Button -->
+            <button 
+              class="w-full h-12 text-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              :disabled="(!config.text && !file) || isLoading"
+              @click="handleGenerate"
+            >
+              <Sparkles v-if="!isLoading" :size="18" />
+              <span v-if="isLoading">⏳ Generuji audio...</span>
+              <span v-else>Vygenerovat audio</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

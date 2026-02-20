@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Nastavení uživatele - obsahuje API klíče a preference
+// V aplikaci bude jen jedan záznam (id = 1)
+model UserSettings {
+  id Int @id @default(1)
+
+  // API klíče (šifrované, ukládat jen pokud je to bezpečné)
+  googleApiKey String?
+  microsoftApiKey String?
+  geminiApiKey String?
+
+  // Výchozí preference pro TTS
+  defaultLanguage String @default("cs-CZ")
+  defaultVoiceId String @default("cs-CZ-Wavenet-A")
+  defaultSpeed Float @default(1.0)
+  defaultPitch Float @default(0.0)
+  defaultMode String @default("basic") // 'basic', 'manual-ssml', 'auto-ssml'
+
+  // Ostatní nastavení
+  ttsProvider String @default("google") // 'google', 'microsoft', 'gemini'
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Záznam vygenerovaného audia - pro historii v LibraryScreen
+model TtsRecord {
+  id String @id @default(cuid())
+
+  // Obsahy textu
+  title String // Název nahrávky (defaultně první pár slov)
+  originalText String // Originální vstupní text (CC_Longtext)
+  ssmlText String? // SSML text, pokud byl použit (CC_Longtext)
+
+  // Konfigurace hlasu a jazyka
+  language String // Např. 'cs-CZ'
+  voiceId String // Např. 'cs-CZ-Wavenet-A'
+  mode String // 'basic', 'manual-ssml', 'auto-ssml'
+
+  // Audio parametry
+  speed Float @default(1.0) // Rychlost řeči
+  pitch Float @default(0.0) // Výška tónu
+
+  // Soubory a metadata
+  audioFilePath String // Cesta k .mp3 nebo .wav souboru na disku
+  duration Float @default(0) // Délka v sekundách
+  folder String? // Název složky pro kategorii (optional)
+
+  // Uživatelské interakce
+  rating Int @default(0) // 1-5 hvězd, 0 = neohodnoceno
+  isFavorite Boolean @default(false) // Je v oblíbených?
+
+  // Metadata
+  provider String @default("google") // Který poskytovatel TTS ('google', 'microsoft', 'gemini')
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexy pro efektivnější dotazování
+  @@index([folder])
+  @@index([createdAt])
+  @@index([isFavorite])
+}

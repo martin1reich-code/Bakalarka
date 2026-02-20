@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^6.4.0",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

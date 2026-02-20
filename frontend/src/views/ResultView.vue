@@ -2,12 +2,14 @@
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useTtsStore } from '@/stores/ttsStore'
+import { useAppStore } from '@/stores/appStore'
 import AudioPlayer from '@/components/AudioPlayer.vue'
 import StarRating from '@/components/StarRating.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const ttsStore = useTtsStore()
+const appStore = useAppStore()
 const { currentResult } = storeToRefs(ttsStore)
 
 const audioRef = ref<HTMLAudioElement | null>(null)
@@ -49,7 +51,20 @@ const rate = (rating: number) => {
 }
 
 const saveToLibrary = () => {
-  console.log('Saving to library...')
+  if (currentResult.value) {
+    appStore.addToLibrary({
+      id: currentResult.value.id,
+      title: currentResult.value.originalText.substring(0, 100),
+      audioUrl: currentResult.value.audioUrl,
+      originalText: currentResult.value.originalText,
+      ssmlText: currentResult.value.ssmlText,
+      duration: currentResult.value.duration,
+      format: currentResult.value.format,
+      rating: currentResult.value.rating,
+      createdAt: new Date().toISOString()
+    })
+    alert('✅ Audio bylo uloženo do knihovny!')
+  }
 }
 
 const download = () => {

@@ -51,6 +51,14 @@ const router = createRouter({
       meta: {
         title: 'Nastavení'
       }
+    },
+    {
+      path: '/text-split',
+      name: 'text-split',
+      component: () => import('../views/TextSplitPage.vue'),
+      meta: {
+        title: 'Rozdělení textu'
+      }
     }
   ]
 })
